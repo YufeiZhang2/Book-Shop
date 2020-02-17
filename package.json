@@ -1,0 +1,23 @@
+{
+  "name": "small-server",
+  "version": "1.0.0",
+  "description": "node.js project for learning backend",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YufeiZhang2/node-project.git"
+  },
+  "author": "Ivan (Yufei)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YufeiZhang2/node-project/issues"
+  },
+  "homepage": "https://github.com/YufeiZhang2/node-project#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
