@@ -1,40 +1,20 @@
-const http = require("http");
+const express = require("express");
+const bodyParser = require("body-parser");
+const path = require("path");
 
-const server = http.createServer((req, res) => {
-  const url = req.url;
-  if (url === "/") {
-    res.setHeader("Content-type", "text/html");
-    res.write("<html> ");
-    res.write("<body><p> hi ivan, from node.js server.");
-    res.write(
-      "<form action='/create-user' method='post'><label>username</label><input type='text' name='username'></input> <button type='submit'>send</button></form>"
-    );
-    res.write("</body>");
-    res.write("</html>");
-    return res.end();
-  }
+const rootDir = require("./util/path");
 
-  if (url === "/users") {
-    res.setHeader("Content-type", "text/html");
-    res.write("<html> ");
-    res.write("<body><ul><li>User 1</li> <li>User 2</li></ul></body>");
-    res.write("</html>");
-    return res.end();
-  }
+const app = express();
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
 
-  if (url === "/create-user") {
-    body = [];
-    req.on("data", chunk => {
-      body.push(chunk);
-    });
-    req.on("end", () => {
-      const parsedBody = Buffer.concat(body).toString();
-      console.log(parsedBody.split("=")[1]);
-    });
-    res.statusCode = 302;
-    res.setHeader("Location", "/");
-    res.end();
-  }
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use("/admin", adminRoutes);
+app.use(shopRoutes);
+
+app.use("/", (req, res, next) => {
+  res.status(404).sendFile(path.join(rootDir, "views", "not-found-page.html"));
 });
 
-server.listen(3000);
+app.listen(3000);
