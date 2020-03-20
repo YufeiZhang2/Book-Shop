@@ -2,14 +2,13 @@ const mongodb = require("mongodb");
 const MongoClient = mongodb.MongoClient;
 
 let _db;
-
-const mongoConnect = () => {
-  MongoClient.connect(
-    "mongodb+srv://yufei:KL3vd6zNBmsZpe8G@cluster0-ohllh.mongodb.net/test?retryWrites=true&w=majority",
-    { useUnifiedTopology: true }
-  )
+let url =
+  "mongodb+srv://yufei:allenzhang@cluster0-h9mm0.mongodb.net/test?retryWrites=true&w=majority";
+const mongoConnect = callback => {
+  MongoClient.connect(url, { useUnifiedTopology: true })
     .then(client => {
       _db = client.db("book-shop");
+      callback();
     })
     .catch(err => {
       console.log(err);
