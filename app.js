@@ -4,7 +4,7 @@ const path = require("path");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const errorController = require("./controller/404");
-const mongoConnect = require("./util/databse").mongoConnect;
+const mongoose = require("mongoose");
 const User = require("./model/user");
 
 const app = express();
@@ -16,10 +16,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
-  User.findById("5e74c6f034aa66a81256e8e7")
+  User.findById("5e781a07b0d68c28653bf699")
     .then(user => {
-      req.user = new User(user.name, user.email, user.cart, user._id);
-      console.log(req.user);
+      req.user = user;
+      console.log("req user", req.user);
       next();
     })
     .catch(err => {
@@ -32,6 +32,23 @@ app.use(shopRoutes);
 
 app.use("/", errorController.get404);
 
-mongoConnect(() => {
-  app.listen(3000);
-});
+const url =
+  "mongodb+srv://yufei:allenzhang@cluster0-h9mm0.mongodb.net/book-shop?retryWrites=true&w=majority";
+mongoose
+  .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(connection => {
+    User.findOne().then(user => {
+      if (!user) {
+        const user = new User({
+          name: "yufei",
+          email: "yufei.z222@gmail.com",
+          cart: { items: [] }
+        });
+        user.save();
+      }
+      app.listen(3000);
+    });
+  })
+  .catch(err => {
+    console.log(err);
+  });
